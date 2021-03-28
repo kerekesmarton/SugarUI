@@ -1,5 +1,5 @@
 import SwiftUI
-import Additions
+import Sugar
 import SwiftUIPager
 
 public struct ImageCarouselView: View {
@@ -16,8 +16,12 @@ public struct ImageCarouselView: View {
     }
 
     public var body: some View {
-        Pager(page: $currentIndex, data: media, id: \.self, content: { item in
+        Pager(page: .withIndex(currentIndex), data: media, id: \.self) { item in
             AsyncImage(model: item, placeholder: placeholder)
-        }).pagingPriority(.simultaneous)
+        }
+        .pagingPriority(.simultaneous)
+        .onPageChanged { (int) in
+            self.currentIndex = int
+        }
     }
 }

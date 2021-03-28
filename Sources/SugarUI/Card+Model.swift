@@ -1,5 +1,5 @@
 import SwiftUI
-import Additions
+import Sugar
 
 extension Card {
     public struct ButtonModel {

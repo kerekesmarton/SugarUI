@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import Sugar
 
 public struct NavigationViewModel<T: View> {
     public init(model: ButtonTheme.Model, destination: T, isActive: Binding<Bool>) {

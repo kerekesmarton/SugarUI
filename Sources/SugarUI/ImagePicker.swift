@@ -1,5 +1,5 @@
 import SwiftUI
-import Additions
+import Sugar
 
 public struct ImagePickerView: UIViewControllerRepresentable {
     public init(sourceType: UIImagePickerController.SourceType, isPresented: Binding<Bool>, onImagePicked: @escaping (UIImage) -> Void) {

@@ -1,6 +1,6 @@
 import SwiftUI
 import SFSymbols
-import Additions
+import Sugar
 
 @available(iOS 13.0, *)
 public struct FloatingActionButton: View {

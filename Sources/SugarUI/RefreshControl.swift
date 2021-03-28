@@ -1,6 +1,6 @@
 import SwiftUI
 import Combine
-import Additions
+import Sugar
 
 @available(iOS 13.0, *)
 public class RefreshControl: ObservableObject, ScrollViewConsumer {

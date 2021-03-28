@@ -1,5 +1,5 @@
 import SwiftUI
-import Additions
+import Sugar
 
 public struct BannerView: View {
     @Binding var isPresenting: Bool

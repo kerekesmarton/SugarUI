@@ -1,7 +1,7 @@
 import XCTest
 
-import Sugar_UITests
+import SugarUITests
 
 var tests = [XCTestCaseEntry]()
-tests += Sugar_UITests.allTests()
+tests += SugarUITests.allTests()
 XCTMain(tests)

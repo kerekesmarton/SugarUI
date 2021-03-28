@@ -1,5 +1,5 @@
 import SwiftUI
-import Additions
+import Sugar
 
 public struct ErrorView: View {
 

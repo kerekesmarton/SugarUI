@@ -1,6 +1,6 @@
 import SwiftUI
 import SFSymbols
-import Additions
+import Sugar
 
 public struct Card: View {
     
