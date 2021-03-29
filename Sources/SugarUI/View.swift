@@ -30,6 +30,14 @@ public extension View {
         return LoadingView()
     }
 
+    func makeErrorView(_ error: ServiceError, primaryAction: ErrorView.ActionModel? = nil, secondaryAction: ErrorView.ActionModel? = nil) -> some View {
+        ErrorView(error: ErrorView.Model(title: error.errorDescription,
+                                       subtitle: error.recoverySuggestion,
+                                       image: error.suggestiveImage,
+                                       primaryAction: primaryAction,
+                                       secondaryAction: secondaryAction))
+    }
+
     func keyboardAdaptive() -> some View {
         ModifiedContent(content: self, modifier: KeyboardAdaptive())
     }
