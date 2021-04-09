@@ -3,7 +3,6 @@ import SwiftUI
 extension Font {
     
     public enum Theme: String, CaseIterable, Identifiable {
-        
         case headline
         case title1
         case title2
