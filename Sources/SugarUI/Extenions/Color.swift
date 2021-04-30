@@ -17,22 +17,7 @@ extension Color {
     }
     
     public init(_ value: Theme) {
-        switch value {
-        case .primary:
-            self = Color("primary")
-        case .secondary:
-            self = Color("secondary")
-        case .disabled:
-            self = Color("disabled")
-        case .background:
-            self = Color("background")
-        case .success:
-            self = Color("success")
-        case .error:
-            self = Color("error")
-        case .warning:
-            self = Color("warning")
-        }
+        self = Color(value.rawValue)
     }
     
     public enum Dim: Double {

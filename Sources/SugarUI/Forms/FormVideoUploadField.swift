@@ -1,12 +1,13 @@
 import SwiftUI
 import Sugar
 
-public protocol UploadableMedia: Equatable {
+public protocol UploadableVideo: Equatable {
     var id: String { get }
     var identityId: String { get }
+    var url: URL? { get }
 }
 
-public struct FormImageUploadField<T: UploadableMedia>: View, Equatable {
+public struct FormVideoUploadField<T: UploadableVideo>: View, Equatable {
     public init(header: String, fileUploadResult: Binding<FileUploadResult<T>>) {
         self.header = header
         self._fileUploadResult = fileUploadResult
@@ -14,8 +15,8 @@ public struct FormImageUploadField<T: UploadableMedia>: View, Equatable {
 
     var header: String
     @Binding var fileUploadResult: FileUploadResult<T>
-
-    @State private var pickerShown = false
+//    @State private var pickerShown = false
+    @ObservedObject var router = FormVideoUploadRouter(isPresented: .constant(false))
 
     public var body: some View {
         Section(header: Text(header).font(Font(.title3)),
@@ -27,67 +28,61 @@ public struct FormImageUploadField<T: UploadableMedia>: View, Equatable {
             VStack {
                 HStack {
 
-                    Text("Choose an image")
+                    Text("Choose a video")
                         .foregroundColor(Color(.primary))
                         .font(Font(.small))
 
                     Spacer()
 
                     Button(action: {
-                        self.pickerShown.toggle()
+                        router.navigateTo(
+                            MediaPickerView(assetType: .movie(block: { (url) in
+                                self.fileUploadResult = .picked(url)
+                            }), isPresented: router.isNavigating)
+                        )
                     }, label: {
                         ButtonTheme.makeInnerBody(model: .image(Image(symbol: .cameraOnRectangle)))
                     })
-                        .buttonStyle(ButtonTheme(size: .init(width: .fixed, height: .large), style: .filled))
+                    .navigation(router)
+                    .buttonStyle(ButtonTheme(size: .init(width: .fixed, height: .large), style: .filled))
                 }
                 .frame(height: 44)
 
                 Group {
                     switch fileUploadResult {
                     case .success(let media), .existing(let media):
-                        AsyncImage(
-                            model: AsyncImageModel(id: media.id, identityId: media.identityId),
-                            placeholder: nil
-                        )
+                        VideoPlayerView(url: media.url, title: "")
                     case .uploading(let progress):
                         HStack {
                             ProgressView(progress)
                             Text("Uploading")
                         }
 
-                    case .picked(let image):
-                        Image(uiImage: image)
-                            .resizable()
-                            .transition(.fade(duration: 0.2)) // Fade Transition with duration
-                            .scaledToFill()
+                    case .picked(let url):
+                        VideoPlayerView(url: url, title: "")
                     case .none, .error:
                         EmptyView()
                     }
                 }
-            }
-            .sheet(isPresented: $pickerShown) {
-                ImagePickerView(
-                    sourceType: .photoLibrary,
-                    type: .image(block: { (image) in self.fileUploadResult = .picked(image) }),
-                    isPresented: self.$pickerShown
-                )
-            }
+            }            
         }
     }
 
-    public static func == (lhs: FormImageUploadField, rhs: FormImageUploadField) -> Bool {
+    public static func == (lhs: FormVideoUploadField, rhs: FormVideoUploadField) -> Bool {
         lhs.fileUploadResult == rhs.fileUploadResult
     }
 }
 
-extension FormImageUploadField {
+class FormVideoUploadRouter: Router, ObservableObject {}
+
+extension FormVideoUploadField {
 
     public enum FileUploadResult<T: Equatable>: Equatable {
 
         case success(T)
         case error(ServiceError)
         case uploading(Progress)
-        case picked(UIImage)
+        case picked(URL)
         case existing(T)
         case none
 
