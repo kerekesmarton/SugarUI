@@ -1,5 +1,6 @@
 import Foundation
 import Photos
+import Sugar
 
 extension PHAsset: Identifiable {}
 
@@ -17,6 +18,7 @@ public class Asset: ObservableObject, Identifiable, Hashable {
 
     @Published var image: UIImage? = nil
     @Published var video: AVPlayerItem? = nil
+    @Inject var dispatch: Dispatching
 
     let options: RequestOptions
     let asset: PHAsset
@@ -42,29 +44,28 @@ public class Asset: ObservableObject, Identifiable, Hashable {
     }
 
     func request() {
-
-        DispatchQueue.global().async {
+        dispatch.block {
             switch self.type {
             case .image:
                 let requestOptions = self.imageRequest(options: self.options)
                 self.manager.requestImage(for: self.asset, targetSize: self.size, contentMode: .aspectFill, options: requestOptions) { [weak self] (image, info) in
-                    DispatchQueue.main.async {
+                    self?.dispatch.dispatchMain {
                         self?.image = image
                     }
                 }
             case .movie:
                 let requestOptions = self.videoRequest(options: self.options)
-                self.manager.requestPlayerItem(forVideo: self.asset, options: requestOptions) { (item, options) in
-                    DispatchQueue.main.async {
-                        self.video = item
+                self.manager.requestPlayerItem(forVideo: self.asset, options: requestOptions) { [weak self] (item, options) in
+                    self?.dispatch.dispatchMain {
+                        self?.video = item
                     }
-                }                
+                }
             }
         }
     }
 
     func prepareForUpload() {
-        DispatchQueue.global().async {
+        dispatch.block {
             switch self.type {
             case .image(block: let block):
                 let requestOptions = self.imageRequest(options: .upload)
@@ -72,7 +73,7 @@ public class Asset: ObservableObject, Identifiable, Hashable {
                     guard let data = data, let image = UIImage(data: data) else {
                         return
                     }
-                    DispatchQueue.main.async {
+                    self.dispatch.dispatchMain {
                         block(image)
                         self.delegate?.didFinishPick()
                     }
@@ -83,7 +84,7 @@ public class Asset: ObservableObject, Identifiable, Hashable {
                     guard let asset = asset as? AVURLAsset else {
                         return
                     }
-                    DispatchQueue.main.async {
+                    self.dispatch.dispatchMain {
                         block(asset.url)
                         self.delegate?.didFinishPick()
                     }

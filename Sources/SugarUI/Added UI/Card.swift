@@ -21,6 +21,8 @@ public struct Card: View {
                     .padding(EdgeInsets(top: 16, leading: 0, bottom: 13, trailing: 0))
             case .image(image: let media, placeholder: let placeholder, badges: _):
                 makeImageCarousel([media].compactMap { $0 }, placeholder: placeholder)
+            case .video(videos: let media, placeholder: let placeholder, badges: _):
+                makeImageCarousel(media, placeholder: placeholder)
             case .images(images: let media, placeholder: let placeholder, badges: _):
                 makeImageCarousel(media, placeholder: placeholder)
             case .infoLine(let info):
@@ -50,7 +52,7 @@ public struct Card: View {
     private func makeImageCarousel(_ media: [AsyncImageModel], placeholder: Image?) -> some View {
         ImageCarouselView(media: media, placeholder: placeholder, imageHeight: imageHeight, currentIndex: $currentImageIndex)
             .frame(minHeight: imageHeight, maxHeight: imageHeight, alignment: .center)
-            .cornerRadius(16)
+            .cornerRadius(8)
             .clipped()
             .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
             .highPriorityGesture(TapGesture().onEnded { self._onTap?()})

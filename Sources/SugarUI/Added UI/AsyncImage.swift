@@ -40,6 +40,8 @@ public struct AsyncImage: View, Equatable {
                     .resizable()
                     .transition(.fade(duration: 0.2)) // Fade Transition with duration
                     .scaledToFill()
+            case .video(let url):
+                VideoPlayerView(url: url, title: "")
             case .error:
                 makePlaceholder()
             }
@@ -55,6 +57,7 @@ class AsyncImagePresenter: ObservableObject, Equatable {
     enum Model {
         case loading
         case image(Image)
+        case video(URL)
         case error
     }
 
@@ -72,12 +75,7 @@ class AsyncImagePresenter: ObservableObject, Equatable {
 
     private var cancellable: AnyCancellable?
 
-    func load() {
-        guard let model = model else {
-            state = .error
-            return
-        }
-
+    private func loadImage(_ model: AsyncImageModel) {
         downloader.download(model: model) { (progress) in
             print(progress)
         } completion: { (result) in
@@ -87,6 +85,30 @@ class AsyncImagePresenter: ObservableObject, Equatable {
                 return
             }
             self.state = .image(Image(uiImage: image))
+        }
+    }
+
+    private func loadVideo(_ model: AsyncImageModel) {
+        downloader.videoUrl(model: model, quality: .medium) { (result) in
+            switch result {
+            case .success(let url):
+                self.state = .video(url)
+            case .failure(let error):
+                self.state = .error
+            }
+        }
+    }
+
+    func load() {
+        guard let model = model else {
+            state = .error
+            return
+        }
+
+        if model.isVideo {
+            loadVideo(model)
+        } else {
+            loadImage(model)
         }
 
     }

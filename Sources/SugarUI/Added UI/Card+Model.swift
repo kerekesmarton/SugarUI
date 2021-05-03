@@ -15,6 +15,7 @@ extension Card {
     public enum FieldInfo: Identifiable {
         case title(title: String, detail: String)
         case images(images: [AsyncImageModel], placeholder: Image, badges: [Any])
+        case video(videos: [AsyncImageModel], placeholder: Image, badges: [Any])
         case image(image: AsyncImageModel?, placeholder: Image, badges: [Any])
         case infoLine([String])
         case secondInfoLine(String)
@@ -24,6 +25,7 @@ extension Card {
         private enum Constants: String {
             case image
             case images
+            case video
             case priceLine
             case infoLine
             case secondInfoLine
@@ -37,6 +39,8 @@ extension Card {
                 return Constants.image.rawValue
             case .images:
                 return Constants.images.rawValue
+            case .video:
+                return Constants.video.rawValue
             case .title(let price, let time):
                 return Constants.priceLine.rawValue + price + " " + time
             case .infoLine(let info):
