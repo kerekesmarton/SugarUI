@@ -15,11 +15,14 @@ struct VideoPlayerView: View {
     var body: some View {
         VideoPlayer(player: presenter.player) {
             VStack {
-                    Spacer()
-                    Text(title)
-                        .foregroundColor(Color(.primary))
-                        .background(Color.white.opacity(0.7))
+                Spacer()
+                Text(title)
+                    .foregroundColor(Color(.primary))
+                    .background(Color.white.opacity(0.7))
+                if presenter.showLoading {
+                    makeLoadingView()
                 }
+            }
         }
         .scaledToFill()
         .onAppear {
@@ -46,5 +49,16 @@ class VideoPlayerPresenter: ObservableObject {
         player.preroll(atRate: 1, completionHandler: { (ready) in
             self.showLoading = !ready
         })
+    }
+}
+
+
+
+struct VideoPlayerView_Previews: PreviewProvider {
+    static let url = URL(string: "https://woopdo112648-dev.s3-eu-west-1.amazonaws.com/vid/vid.m3u8")!
+
+    static var previews: some View {
+        VideoPlayerView(url: url, title: "")
+            .previewLayout(.fixed(width: 325, height: 250))
     }
 }
