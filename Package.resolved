@@ -29,6 +29,15 @@
         }
       },
       {
+        "package": "Sugar",
+        "repositoryURL": "https://github.com/kerekesmarton/Sugar.git",
+        "state": {
+          "branch": "master",
+          "revision": "8ef88c6c7883bec3bbb42435c5aeb320f2c9c5d1",
+          "version": null
+        }
+      },
+      {
         "package": "SwiftUIPager",
         "repositoryURL": "https://github.com/fermoya/SwiftUIPager.git",
         "state": {
