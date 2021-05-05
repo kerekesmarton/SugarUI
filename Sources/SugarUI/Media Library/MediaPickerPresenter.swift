@@ -42,6 +42,8 @@ class MediaPickerPresenter: NSObject, ObservableObject, PHPhotoLibraryChangeObse
             return
         case .limited, .authorized:
             return
+        @unknown default:
+            return
         }
     }
 

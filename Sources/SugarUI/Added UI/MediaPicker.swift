@@ -41,8 +41,6 @@ struct MediaPicker: UIViewControllerRepresentable {
             if itemProvider.hasItemConformingToTypeIdentifier(UTType.movie.identifier) {//"public.mpeg-4"
                 itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.movie.identifier) { url, err in
                     DispatchQueue.main.sync {
-                        let urlStr = url?.absoluteString
-                        let videoURL = URL(fileURLWithPath: urlStr!)
                         self.completion(url)
                         self.dismiss()
                     }

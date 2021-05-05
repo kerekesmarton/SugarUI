@@ -58,7 +58,7 @@ class AsyncImagePresenter: ObservableObject, Equatable {
         case loading
         case image(Image)
         case video(URL)
-        case error
+        case error(MediaError)
     }
 
     @Published var state: Model = .loading
@@ -81,7 +81,7 @@ class AsyncImagePresenter: ObservableObject, Equatable {
         } completion: { (result) in
 
             guard let image = try? result.get() else {
-                self.state = .error
+                self.state = .error(MediaError.empty)
                 return
             }
             self.state = .image(Image(uiImage: image))
@@ -94,14 +94,14 @@ class AsyncImagePresenter: ObservableObject, Equatable {
             case .success(let url):
                 self.state = .video(url)
             case .failure(let error):
-                self.state = .error
+                self.state = .error(error)
             }
         }
     }
 
     func load() {
         guard let model = model else {
-            state = .error
+            state = .error(MediaError.empty)
             return
         }
 

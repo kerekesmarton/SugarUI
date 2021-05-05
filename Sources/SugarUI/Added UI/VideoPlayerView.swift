@@ -3,7 +3,7 @@ import SwiftUI
 import AVKit
 
 struct VideoPlayerView: View {
-    internal init(url: URL?, title: String) {
+    internal init(url: URL, title: String) {
         self.title = title
         self.presenter = VideoPlayerPresenter(url: url)
     }
@@ -13,7 +13,7 @@ struct VideoPlayerView: View {
     @ObservedObject var presenter: VideoPlayerPresenter
 
     var body: some View {
-        VideoPlayer(player: presenter.makePlayer) {
+        VideoPlayer(player: presenter.player) {
             VStack {
                     Spacer()
                     Text(title)
@@ -29,25 +29,22 @@ struct VideoPlayerView: View {
 }
 
 class VideoPlayerPresenter: ObservableObject {
-    init(url: URL?) {
+    init(url: URL) {
         self.url = url
     }
 
-    private var url: URL?
+    private var url: URL
 
-    var makePlayer: AVPlayer? {
-        guard let url = url else { return nil }
-        return player
-    }
+    @Published var showLoading = false
 
     lazy var player: AVPlayer = {
-        return AVPlayer(url: url!)
+        return AVPlayer(url: url)
     }()
 
     func preBuffer() {
-        makePlayer?.automaticallyWaitsToMinimizeStalling = true
-        makePlayer?.preroll(atRate: 1, completionHandler: { (ready) in
-            <#code#>
+        player.automaticallyWaitsToMinimizeStalling = true
+        player.preroll(atRate: 1, completionHandler: { (ready) in
+            self.showLoading = !ready
         })
     }
 }

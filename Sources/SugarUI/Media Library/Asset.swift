@@ -1,6 +1,7 @@
 import Foundation
 import Photos
 import Sugar
+import UIKit
 
 extension PHAsset: Identifiable {}
 

@@ -4,7 +4,7 @@ import Sugar
 public protocol UploadableVideo: Equatable {
     var id: String { get }
     var identityId: String { get }
-    var url: URL? { get }
+    var url: URL { get }
 }
 
 public struct FormVideoUploadField<T: UploadableVideo>: View, Equatable {
