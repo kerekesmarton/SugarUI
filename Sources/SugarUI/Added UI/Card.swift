@@ -55,7 +55,6 @@ public struct Card: View {
             .cornerRadius(8)
             .clipped()
             .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
-            .highPriorityGesture(TapGesture().onEnded { self._onTap?()})
     }
     
     private func makeTitle(_ text: String, _ time: String) -> some View {
