@@ -4,7 +4,7 @@ import Sugar
 public protocol UploadableVideo: Equatable {
     var id: String { get }
     var identityId: String { get }
-    var url: URL { get }
+    var url: URL? { get }
 }
 
 public struct FormVideoUploadField<T: UploadableVideo>: View, Equatable {
@@ -15,7 +15,6 @@ public struct FormVideoUploadField<T: UploadableVideo>: View, Equatable {
 
     var header: String
     @Binding var fileUploadResult: FileUploadResult<T>
-//    @State private var pickerShown = false
     @ObservedObject var router = FormVideoUploadRouter(isPresented: .constant(false))
 
     public var body: some View {
@@ -51,7 +50,13 @@ public struct FormVideoUploadField<T: UploadableVideo>: View, Equatable {
                 Group {
                     switch fileUploadResult {
                     case .success(let media), .existing(let media):
-                        VideoPlayerView(url: media.url, title: "")
+                        Group {
+                            if let url = media.url {
+                                VideoPlayerView(url: url)
+                            } else {
+                                makeErrorView(MediaError.empty)
+                            }
+                        }
                     case .uploading(let progress):
                         HStack {
                             ProgressView(progress)
@@ -59,7 +64,7 @@ public struct FormVideoUploadField<T: UploadableVideo>: View, Equatable {
                         }
 
                     case .picked(let url):
-                        VideoPlayerView(url: url, title: "")
+                        VideoPlayerView(url: url)
                     case .none, .error:
                         EmptyView()
                     }

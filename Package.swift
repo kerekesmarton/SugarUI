@@ -15,9 +15,8 @@ let package = Package(
             targets: ["SugarUI"]),
     ],
     dependencies: [
-//        .package(path: "../Sugar"),
-        .package(url: "https://github.com/kerekesmarton/Sugar.git", Package.Dependency.Requirement.branch("master")),
-        .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.10.0"),
+        .package(path: "../Sugar"),
+//        .package(url: "https://github.com/kerekesmarton/Sugar.git", Package.Dependency.Requirement.branch("master")),
         .package(url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git", from: "2.0.0"),
         .package(url: "https://github.com/hubrioAU/SFSymbols.git", from: "0.9.5"),
         .package(url: "https://github.com/fermoya/SwiftUIPager.git", from: "2.1.0")        

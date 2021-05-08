@@ -41,7 +41,7 @@ public struct AsyncImage: View, Equatable {
                     .transition(.fade(duration: 0.2)) // Fade Transition with duration
                     .scaledToFill()
             case .video(let url):
-                VideoPlayerView(url: url, title: "")
+                VideoPlayerView(url: url)
             case .error:
                 makePlaceholder()
             }

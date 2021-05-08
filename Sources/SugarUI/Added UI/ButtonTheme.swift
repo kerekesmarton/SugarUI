@@ -107,8 +107,9 @@ public struct ButtonTheme: ButtonStyle {
             .frame(maxHeight: maxHeight, alignment: .center)
             .background(backgroundColor)
             .cornerRadius(8)
-            .overlay(RoundedRectangle(cornerRadius: 8)
-            .stroke(borderColor, lineWidth: 2))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8).stroke(borderColor, lineWidth: 2)
+            )
     }
     
     public enum Model {

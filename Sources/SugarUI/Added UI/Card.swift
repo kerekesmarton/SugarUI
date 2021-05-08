@@ -51,7 +51,7 @@ public struct Card: View {
 
     private func makeImageCarousel(_ media: [AsyncImageModel], placeholder: Image?) -> some View {
         ImageCarouselView(media: media, placeholder: placeholder, imageHeight: imageHeight, currentIndex: $currentImageIndex)
-            .frame(minHeight: imageHeight, maxHeight: imageHeight, alignment: .center)
+            .frame(height: imageHeight, alignment: .center)
             .cornerRadius(8)
             .clipped()
             .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
@@ -114,9 +114,9 @@ public struct Card: View {
     private var imageHeight: CGFloat {
         switch self.cardType {
         case .list:
-            return 200
+            return 500
         case .detail, .minimal:
-            return 120
+            return 350
         }
     }
 }
