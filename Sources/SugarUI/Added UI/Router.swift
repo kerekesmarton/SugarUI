@@ -67,8 +67,15 @@ public extension Router {
         state.navigating = AnyView(view)
     }
     
-    func presentSheet<V: View>(_ view: V) {
-        state.presentingSheet = AnyView(view)
+    func presentSheet<V: View>(_ view: V, embedInNavigation: Bool) {
+        if embedInNavigation {
+            state.presentingSheet = NavigationView {
+                AnyView(view)
+            }.anyView()
+        } else {
+            state.presentingSheet = AnyView(view)
+        }
+
     }
     
     func dismiss() {

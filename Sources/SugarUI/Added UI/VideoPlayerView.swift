@@ -20,7 +20,7 @@ class VideoPlayerUIView: UIView {
 
         super.init(frame: .zero)
 
-        backgroundColor = .lightGray
+        backgroundColor = UIColor(named: "primary")
         playerLayer.player = player
         layer.addSublayer(playerLayer)
         playerLayer.videoGravity = .resizeAspectFill
@@ -124,9 +124,19 @@ struct VideoPlayerControlsView : View {
         HStack {
             // Play/pause button
             Button(action: togglePlayPause) {
-                Image(systemName: playerPaused ? "play" : "pause")
-                    .padding(.trailing, 10)
+                ButtonTheme
+                    .makeInnerBody(
+                        model: .image(
+                            Image(systemName: playerPaused ? "play" : "pause")
+                        )
+                    )
             }
+            .buttonStyle(
+                ButtonTheme(
+                    size: ButtonTheme.Size.init(width: .fixed, height: .small),
+                    style: .outline
+                )
+            )
             // Current video time
             Text("\(formatSecondsToHMS(videoPos * videoDuration))")
             // Slider for seeking / showing video progress
@@ -134,8 +144,8 @@ struct VideoPlayerControlsView : View {
             // Video duration
             Text("\(formatSecondsToHMS(videoDuration))")
         }
-        .padding(.leading, 10)
-        .padding(.trailing, 10)
+        .font(Font(.caption1))
+        .foregroundColor(Color(.secondary))
     }
 
     private func togglePlayPause() {
@@ -184,6 +194,11 @@ struct VideoPlayerControlsView : View {
 
 // This is the SwiftUI view which contains the player and its controls
 public struct VideoPlayerView : View {
+    public enum ControlsStyle {
+        case underPlayer
+        case overlay
+    }
+
     // The progress through the video, as a percentage (from 0 to 1)
     @State private var videoPos: Double = 0
     // The duration of the video in seconds
@@ -192,32 +207,42 @@ public struct VideoPlayerView : View {
     @State private var seeking = false
 
     private let player: AVPlayer
-
-    public init(url: URL) {
+    private let style: ControlsStyle
+    public init(url: URL, style: ControlsStyle = .overlay) {
         player = AVPlayer(url: url)
+        self.style = style
     }
 
     public var body: some View {
-        VStack {
-            VideoPlayerContainerView(videoPos: $videoPos,
-                            videoDuration: $videoDuration,
-                            seeking: $seeking,
-                            player: player)
-            VideoPlayerControlsView(videoPos: $videoPos,
-                                    videoDuration: $videoDuration,
-                                    seeking: $seeking,
-                                    player: player)
-        }
-        .onDisappear {
-            // When this View isn't being shown anymore stop the player
-            self.player.replaceCurrentItem(with: nil)
+        Group {
+            switch style {
+            case .underPlayer:
+                VStack {
+                    videoPlayer
+                    VideoPlayerControlsView(videoPos: $videoPos,
+                                            videoDuration: $videoDuration,
+                                            seeking: $seeking,
+                                            player: player)
+                }
+            case .overlay:
+                videoPlayer.overlay(
+                    VStack {
+                        Spacer()
+                        VideoPlayerControlsView(videoPos: $videoPos,
+                                                videoDuration: $videoDuration,
+                                                seeking: $seeking,
+                                                player: player)
+                            .padding(8)
+                    }
+                )
+            }
         }
     }
-}
 
-// This is the main SwiftUI view for this app, containing a single PlayerContainerView
-struct VideoView: View {
-    var body: some View {
-        VideoPlayerView(url: URL(string: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8")!)
+    var videoPlayer: some View {
+        VideoPlayerContainerView(videoPos: $videoPos,
+                        videoDuration: $videoDuration,
+                        seeking: $seeking,
+                        player: player)        
     }
 }

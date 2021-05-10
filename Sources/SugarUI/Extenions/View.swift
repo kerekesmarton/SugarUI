@@ -81,6 +81,14 @@ public extension View {
         .buttonStyle(ButtonTheme.navigation)
         .frame(height: 30, alignment: .center)
     }
+
+    func anyView() -> AnyView {
+        AnyView(self)
+    }
+
+    func statusBar(style: UIStatusBarStyle) -> some View {
+      preference(key: StatusBarStyleKey.self, value: style)
+    }
 }
 
 public struct LoadingView: View {

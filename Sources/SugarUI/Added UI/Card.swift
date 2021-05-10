@@ -18,7 +18,7 @@ public struct Card: View {
             switch field {
             case .bar(leading: let leading, trailing: let trailing):
                 makeButtonBar(leading: leading, trailing: trailing)
-                    .padding(EdgeInsets(top: 16, leading: 0, bottom: 13, trailing: 0))
+                    .padding(EdgeInsets(top: 16, leading: 1, bottom: 13, trailing: 1))
             case .image(image: let media, placeholder: let placeholder, badges: _):
                 makeImageCarousel([media].compactMap { $0 }, placeholder: placeholder)
             case .video(videos: let media, placeholder: let placeholder, badges: _):
