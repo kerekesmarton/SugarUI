@@ -13,7 +13,6 @@ public struct AsyncImage: View, Equatable {
         self.model = model
         self.placeholder = placeholder
         presenter = AsyncImagePresenter(media: model)
-        presenter.load()
     }
     
     private func makePlaceholder() -> some View {
@@ -45,6 +44,9 @@ public struct AsyncImage: View, Equatable {
             case .error:
                 makePlaceholder()
             }
+        }
+        .onAppear {
+            presenter.load()
         }
     }
 
