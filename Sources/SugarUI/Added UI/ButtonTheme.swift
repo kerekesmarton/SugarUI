@@ -70,7 +70,7 @@ public struct ButtonTheme: ButtonStyle {
         }
     }
 
-    private var backgroundColor: Color {
+    private var backgroundColor: some View {
         switch style {
         case .filled:
             return Color(.secondary)
@@ -98,15 +98,14 @@ public struct ButtonTheme: ButtonStyle {
     }
     
     public func makeBody(configuration: Configuration) -> some View {
-        
         configuration.label
             .font(font)
             .lineLimit(1)
             .foregroundColor(foregroundColor)
             .padding(EdgeInsets(top: 0, leading: sidePadding, bottom: 0, trailing: sidePadding))
             .frame(maxHeight: maxHeight, alignment: .center)
-            .background(backgroundColor)
-            .cornerRadius(8)
+            .background(backgroundColor.cornerRadius(8))
+            .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
             .overlay(
                 RoundedRectangle(cornerRadius: 8).stroke(borderColor, lineWidth: 2)
             )
@@ -116,6 +115,7 @@ public struct ButtonTheme: ButtonStyle {
         case text(String)
         case image(Image)
         case combine(text: String, image: Image)
+        case toggle(isOn: Binding<Bool>, active: Image, inactive: Image)
     }
     
     public static func makeInnerBody(model: Model) -> some View {
@@ -130,6 +130,12 @@ public struct ButtonTheme: ButtonStyle {
                 HStack(alignment: .center, spacing: 8) {
                     image
                     Text(text)
+                }
+            case .toggle(isOn: let isOn, active: let activeImage, inactive: let inactiveImage):
+                if isOn.wrappedValue {
+                    activeImage
+                } else {
+                    inactiveImage
                 }
             }
         }

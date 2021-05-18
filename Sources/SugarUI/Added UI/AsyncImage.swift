@@ -6,13 +6,14 @@ import SDWebImageSwiftUI
 
 public struct AsyncImage: View, Equatable {
     var model: AsyncImageModel?
-    var placeholder: Image?
-    @ObservedObject var presenter: AsyncImagePresenter
+    let placeholder: Image?
+    let format: AsyncImageModel.VideoQuality
+    @StateObject var presenter = AsyncImagePresenter()
 
-    public init(model: AsyncImageModel?, placeholder: Image?) {
+    public init(model: AsyncImageModel?, format: AsyncImageModel.VideoQuality, placeholder: Image?) {
         self.model = model
         self.placeholder = placeholder
-        presenter = AsyncImagePresenter(media: model)
+        self.format = format
     }
     
     private func makePlaceholder() -> some View {
@@ -40,36 +41,35 @@ public struct AsyncImage: View, Equatable {
                     .transition(.fade(duration: 0.2)) // Fade Transition with duration
                     .scaledToFill()
             case .video(let url):
-                VideoPlayerView(url: url)
+                VideoPlayerView(url: url, style: .underPlayer)
             case .error:
                 makePlaceholder()
             }
         }
         .onAppear {
-            presenter.load()
+            guard let model = model else {
+                presenter.loadPlaceholder()
+                return
+            }
+            presenter.load(model: model, format: format)
         }
     }
 
     public static func == (lhs: AsyncImage, rhs: AsyncImage) -> Bool {
-        lhs.presenter == rhs.presenter
+        lhs.model == rhs.model
     }
 }
 
-class AsyncImagePresenter: ObservableObject, Equatable {
-    enum Model {
+class AsyncImagePresenter: ObservableObject {
+    enum State {
         case loading
         case image(Image)
         case video(URL)
         case error(MediaError)
     }
 
-    @Published var state: Model = .loading
-    private let model: AsyncImageModel?
+    @Published var state: State = .loading
     @Inject private var downloader: ImageDownloading
-
-    init(media: AsyncImageModel?) {
-        self.model = media
-    }
 
     deinit {
         cancel()
@@ -90,8 +90,8 @@ class AsyncImagePresenter: ObservableObject, Equatable {
         }
     }
 
-    private func loadVideo(_ model: AsyncImageModel) {
-        downloader.videoUrl(model: model, quality: .medium) { (result) in
+    private func loadVideo(_ model: AsyncImageModel, format: AsyncImageModel.VideoQuality) {
+        downloader.videoUrl(model: model, quality: .xLarge) { (result) in
             switch result {
             case .success(let url):
                 self.state = .video(url)
@@ -101,25 +101,19 @@ class AsyncImagePresenter: ObservableObject, Equatable {
         }
     }
 
-    func load() {
-        guard let model = model else {
-            state = .error(MediaError.empty)
-            return
-        }
-
+    func load(model: AsyncImageModel, format: AsyncImageModel.VideoQuality) {
         if model.isVideo {
-            loadVideo(model)
+            loadVideo(model, format: format)
         } else {
             loadImage(model)
         }
+    }
 
+    func loadPlaceholder() {
+        state = .error(MediaError.empty)
     }
 
     func cancel() {
         cancellable?.cancel()
-    }
-
-    static func == (lhs: AsyncImagePresenter, rhs: AsyncImagePresenter) -> Bool {
-        lhs.model == rhs.model
     }
 }

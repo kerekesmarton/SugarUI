@@ -5,19 +5,19 @@ import SwiftUIPager
 public struct ImageCarouselView: View {
     private var media: [AsyncImageModel]
     private var placeholder: Image?
-    private var imageHeight: CGFloat
+    private var format: AsyncImageModel.VideoQuality
     @Binding var currentIndex: Int
 
-    public init(media: [AsyncImageModel], placeholder: Image?, imageHeight: CGFloat, currentIndex: Binding<Int>) {
+    public init(media: [AsyncImageModel], placeholder: Image?, format: AsyncImageModel.VideoQuality, currentIndex: Binding<Int>) {
         self.media = media
         self.placeholder = placeholder
-        self.imageHeight = imageHeight
+        self.format = format
         self._currentIndex = currentIndex
     }
 
     public var body: some View {
         Pager(page: .withIndex(currentIndex), data: media, id: \.self) { item in
-            AsyncImage(model: item, placeholder: placeholder)
+            AsyncImage(model: item, format: format, placeholder: placeholder)
         }
         .pagingPriority(.simultaneous)
         .onPageChanged { (int) in

@@ -20,11 +20,13 @@ public struct Card: View {
                 makeButtonBar(leading: leading, trailing: trailing)
                     .padding(EdgeInsets(top: 16, leading: 1, bottom: 13, trailing: 1))
             case .image(image: let media, placeholder: let placeholder, badges: _):
-                makeImageCarousel([media].compactMap { $0 }, placeholder: placeholder)
-            case .video(videos: let media, placeholder: let placeholder, badges: _):
-                makeImageCarousel(media, placeholder: placeholder)
+                makeImage(media, format: .list, placeholder: placeholder)
+            case .video(video: let media, format: let format, placeholder: let placeholder, badges: _):
+                makeImage(media, format: format, placeholder: placeholder)
             case .images(images: let media, placeholder: let placeholder, badges: _):
-                makeImageCarousel(media, placeholder: placeholder)
+                makeImageCarousel(media, format: .list, placeholder: placeholder)
+            case .videos(videos: let media, format: let format, placeholder: let placeholder, badges: _):
+                makeImageCarousel(media, format: format, placeholder: placeholder)
             case .infoLine(let info):
                 Text(verbatim: info.joined(separator: "・"))
                     .font(Font(.small))
@@ -49,14 +51,23 @@ public struct Card: View {
         }
     }
 
-    private func makeImageCarousel(_ media: [AsyncImageModel], placeholder: Image?) -> some View {
-        ImageCarouselView(media: media, placeholder: placeholder, imageHeight: imageHeight, currentIndex: $currentImageIndex)
+    private func makeImageCarousel(_ media: [AsyncImageModel], format: AsyncImageModel.VideoQuality, placeholder: Image?) -> some View {
+        ImageCarouselView(media: media, placeholder: placeholder, format: format, currentIndex: $currentImageIndex)
             .frame(height: imageHeight, alignment: .center)
             .cornerRadius(8)
             .clipped()
             .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
     }
-    
+
+
+    private func makeImage(_ media: AsyncImageModel?, format: AsyncImageModel.VideoQuality, placeholder: Image?) -> some View {
+        AsyncImage(model: media, format: format, placeholder: placeholder)
+            .frame(height: imageHeight, alignment: .center)
+            .cornerRadius(8)
+            .clipped()
+            .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
+    }
+
     private func makeTitle(_ text: String, _ time: String) -> some View {
         HStack(alignment: .firstTextBaseline) {
             Text(verbatim: text)
