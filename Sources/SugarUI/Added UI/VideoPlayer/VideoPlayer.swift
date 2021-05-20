@@ -43,6 +43,8 @@ public struct VideoPlayerView : View, Equatable {
 
     var videoControls: some View {
         HStack {
+            Text(presenter.progress)
+
             Button(action: {
                 presenter.rewindVideo(by: 10)
             }) {
@@ -61,8 +63,7 @@ public struct VideoPlayerView : View, Equatable {
                     )
             }
 
-            Spacer()
-            Text("\(presenter.progress):\(presenter.total)")
+            Text(presenter.total)
         }
         .buttonStyle(
             ButtonTheme(
