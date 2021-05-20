@@ -28,16 +28,14 @@ public struct VideoPlayerView : View, Equatable {
         case .underPlayer:
             VStack {
                 VideoPlayer(player: presenter.player)
-                    .layoutPriority(1)
-                videoControls
+                videoControls.padding(2)
             }
         case .overlay:
-            ZStack {
-                VideoPlayer(player: presenter.player)
+            VideoPlayer(player: presenter.player) {
                 VStack {
                     Spacer()
                     videoControls
-                        .padding(8)
+                        .padding(2)
                 }
             }
         }
@@ -45,8 +43,6 @@ public struct VideoPlayerView : View, Equatable {
 
     var videoControls: some View {
         HStack {
-            Text(presenter.progress)
-
             Button(action: {
                 presenter.rewindVideo(by: 10)
             }) {
@@ -65,11 +61,12 @@ public struct VideoPlayerView : View, Equatable {
                     )
             }
 
-            Text(presenter.total)
+            Spacer()
+            Text("\(presenter.progress):\(presenter.total)")
         }
         .buttonStyle(
             ButtonTheme(
-                size: ButtonTheme.Size.init(width: .fixed, height: .small),
+                size: ButtonTheme.Size.init(width: .fixed, height: .large),
                 style: .outline
             )
         )
