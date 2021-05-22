@@ -47,7 +47,7 @@ public struct FormImageUploadField<T: UploadableMedia>: View, Equatable {
                     case .success(let media), .existing(let media):
                         AsyncImage(
                             model: AsyncImageModel(id: media.id, identityId: media.identityId),
-                            format: .list,
+                            format: .large,
                             placeholder: nil
                         )
                     case .uploading(let progress):

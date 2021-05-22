@@ -4,7 +4,6 @@ import Sugar
 public protocol UploadableVideo: Equatable {
     var id: String { get }
     var identityId: String { get }
-    var url: URL? { get }
 }
 
 public struct FormVideoUploadField<T: UploadableVideo>: View, Equatable {
@@ -51,8 +50,12 @@ public struct FormVideoUploadField<T: UploadableVideo>: View, Equatable {
                     switch fileUploadResult {
                     case .success(let media), .existing(let media):
                         Group {
-                            if let url = media.url {
-                                VideoPlayerView(url: url)
+                            if let media = media {
+                                AsyncImage(
+                                    model: AsyncImageModel(id: media.id, identityId: media.identityId),
+                                    format: .large,
+                                    placeholder: nil
+                                )
                             } else {
                                 makeErrorView(MediaError.empty)
                             }
