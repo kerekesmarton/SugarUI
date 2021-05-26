@@ -67,7 +67,8 @@ public struct FormVideoUploadField<T: UploadableVideo>: View, Equatable {
                         }
 
                     case .picked(let url):
-                        VideoPlayerView(url: url)
+                        VideoPlayerView(url: url, style: .underPlayer)
+                            .frame(minHeight: 350)
                     case .none, .error:
                         EmptyView()
                     }
