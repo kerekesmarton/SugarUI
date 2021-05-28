@@ -130,6 +130,8 @@ private class VideoPlayerPresenter: ObservableObject, Equatable {
                 self?.error = .playbackFailed
             case .unknown:
                 ()
+            @unknown default:
+                ()
             }
         })
     }

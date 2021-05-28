@@ -5,7 +5,7 @@ import UIKit
 
 extension PHAsset: Identifiable {}
 
-protocol AssetDelegate: class {
+protocol AssetDelegate: AnyObject {
     func didFinishPick()
 }
 

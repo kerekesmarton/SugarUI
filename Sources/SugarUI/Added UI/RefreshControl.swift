@@ -46,7 +46,7 @@ public class RefreshControl: ObservableObject, ScrollViewConsumer {
     public func didResolveScrollView() {}
 }
 
-public protocol ScrollViewConsumer: class {
+public protocol ScrollViewConsumer: AnyObject {
     var scrollView: UIScrollView? { get set }
     func didResolveScrollView()
 }
